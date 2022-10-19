@@ -75,7 +75,7 @@ swap ...
 --a1 = put0Inm 35 alphabets
 --a2 = psychle a1 41 
 
-{- time for some nerd shit: are the two redirections enough to generate all cyles? 
+{- time for some nerd spiff: are the two redirections enough to generate all cyles? 
 in other words: do they generate Sn for all n?
 actually nvm, obviously yes... just noticed that put0Inm alone is enough for that. 
 any 2-cycle (n m) is the same as 
@@ -88,7 +88,7 @@ index :: Eq a => [a] -> a  -> Int
 index l x = length $ takeWhile (/= x)  l
 
 get :: Eq a => [a] -> Int  ->  a 
-get l n = cycle l !! n 
+get l n = if (n>0) then cycle l !! n else get l (n + length l)  -- I frogging love this language
 
 psychle :: Eq a => [a] -> Int -> [a]  -- usual GT *m of a cyclic group
 psychle l m = map (get l ) ( map (*m) (map (index l ) l ) )
@@ -134,7 +134,41 @@ decrypt1 a = map (get karakters ) (map (index nrandom) a)
 
 -- Now to make it with a password:
 pass = "AriGaT0r" -- Later we make it so that the user can input the password. 
--- nprandom = 
+-- distort = cycle (map (index karakters) pass)  -- easy improvement of securiy: instead of karakters take another randomized list (like nrandom but separate one); also when get IO just make it a function of pass. 
+
+addstrings :: [Char] -> (Char, Char) -> Char
+addstrings l (a, b) = get l ((index l a) + (index l b))
+difstrings :: [Char] -> (Char, Char) -> Char
+difstrings l (a, b) = get l ((index l a) - (index l b))
+--addstrings l1 l2 l3 a b = get l3 ((index l1 a) + (index l2 b))
+
+subcrypt2 :: [Char] -> [Char] -> [Char]  -- takes pass and message and basically applies distrot to it. 
+desubcrypt2 :: [Char] -> [Char] -> [Char]
+subcrypt2 p a = map (addstrings karakters)(zip a (cycle p))  -- finite list of 2 tuples with fst being from message and snd being from pass cycle. => turn into list of numbers by mapping
+desubcrypt2 p a = map (difstrings karakters)(zip a (cycle p))  -- oh boy, negative indexes... need fix. 
+--  desubcrypt2 pass (subcrypt2 pass nrandom) == nrandom  returns  True  hooray
+
+-- MAKE CONJUGATE MAP OMAGAH THE ELEGANCE
+
+encrypt2 :: [Char] -> [Char] -> [Char]
+decrypt2 :: [Char] -> [Char] -> [Char]
+encrypt2 p a = encrypt1 (subcrypt2 p a)
+decrypt2 p a = desubcrypt2 p (decrypt1 a)
+
+
+--nprandom = 
+
+--encrypt2 uses password and a straightforward cyclic indexing to change the message. the decryptionn just reverts that
+--encrypt3 will come after I learn the IO data structure stuff / finish a TUT. All it does is it takes the password from the user and does encrypt2
+--remember to re-commit after each checkpoint
+--ask will/brian/jeff about the git stuff
+--find a way to make it so that if it's on my resume they can just try it out. 
+--maybe try making a decipherere s.t. if one little changee happens it doesn't fail to decypher the whole thing?
+--encrypt4 will just use a random package to generate a random input (say, a number) and you will need both the password and the random number to decrypt the message. random number can be based on password.
+--encrypt5 can just be me learning about hash maps and using those (on top of the above?)
+--encrypt6 will just use the password used less trivially (rather than just a cycle, use some other invertible map). 
+--final touch up will be me learning / recalling stats stuff and getting a measure of how random / safe my "nrandom" is. 
+
 
 
 {-
