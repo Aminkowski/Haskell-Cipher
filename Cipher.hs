@@ -5,6 +5,8 @@
 --  just associate every character with another unique 
 --  character (one-to-one so that it is invertible). 
 
+import System.Random
+
 capitals = ['A'..'Z']
 smalls = ['a'..'z']
 alphabets = capitals ++ smalls
@@ -154,6 +156,35 @@ encrypt2 :: [Char] -> [Char] -> [Char]
 decrypt2 :: [Char] -> [Char] -> [Char]
 encrypt2 p a = encrypt1 (subcrypt2 p a)
 decrypt2 p a = desubcrypt2 p (decrypt1 a)
+
+encrypt3 = do 
+ putStrLn "Enter the message message you want to encrypt: "
+ message <- getLine
+ putStrLn "Enter the password (used to unravel the encrypted message): "
+ pass' <- getLine
+ putStrLn $ "The encrypted message is: " ++ (encrypt2 pass' message) 
+
+decrypt3 = do
+ putStrLn "Enter the message message you want to decrypt: "
+ message <- getLine
+ putStrLn "Enter the password: "
+ pass' <- getLine
+ putStrLn $ "The message is: " ++ (decrypt2 pass' message) 
+
+
+encrypt4 = do 
+ putStrLn "Enter the message message you want to encrypt: "
+ message <- getLine
+ putStrLn "Enter the password (used to unravel the encrypted message): "
+ pass' <- getLine
+ putStrLn $ "The encrypted message is: " ++ (encrypt2 pass' message) 
+
+decrypt4 = do
+ putStrLn "Enter the message message you want to decrypt: "
+ message <- getLine
+ putStrLn "Enter the password: "
+ pass' <- getLine
+ putStrLn $ "The message is: " ++ (decrypt2 pass' message) 
 
 
 --nprandom = 
